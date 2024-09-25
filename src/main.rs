@@ -1,5 +1,5 @@
 use eframe::App;
-use egui::{Context, menu, CentralPanel};
+use egui::{Context, CentralPanel};
 
 fn main() -> Result<(), eframe::Error> {
     let options = eframe::NativeOptions::default();
