@@ -64,21 +64,54 @@ impl eframe::App for FileExplorer {
 
             // Variable to store the new directory to change to, if needed
             let mut new_directory: Option<PathBuf> = None;
-
-            // List the files and directories
-            egui::ScrollArea::vertical().show(ui, |ui| {
-                for entry in &self.entries {
-                    let file_name = entry.file_name().unwrap_or_default().to_string_lossy();
-                    if entry.is_dir() {
-                        if ui.button(format!("[Dir] {}", file_name)).clicked() {
-                            // Store the directory to navigate into
-                            new_directory = Some(entry.clone());
-                        }
-                    } else {
-                        ui.label(file_name);
-                    }
-                }
+            ui.horizontal(|ui| {
+                // First scroll area (for directories)
+                ui.allocate_ui_with_layout(
+                    egui::Vec2::new(150.0,  900.0), // Set fixed width for the first scroll area
+                    egui::Layout::top_down(egui::Align::Min),
+                    |ui| {
+                        egui::ScrollArea::vertical().show(ui, |ui| {
+                            for entry in &self.entries {
+                                let file_name = entry.file_name().unwrap_or_default().to_string_lossy();
+                                if entry.is_dir() {
+                                    if ui.button(format!("[Dir] {}", file_name)).clicked() {
+                                        // Store the directory to navigate into
+                                        new_directory = Some(entry.clone());
+                                    }
+                                }
+                            }
+                        });
+                    },
+                );
+            
+                // Add some space between the two scroll areas
+                ui.add_space(10.0);
+            
+                // Second scroll area (for files)
+                ui.allocate_ui_with_layout(
+                    egui::Vec2::new(150.0, 900.0), // Set fixed width for the second scroll area
+                    egui::Layout::top_down(egui::Align::Min),
+                    |ui| {
+                        egui::ScrollArea::vertical().id_source("files").show(ui, |ui| {
+                            for entry in &self.entries {
+                                let file_name = entry.file_name().unwrap_or_default().to_string_lossy();
+                                if !entry.is_dir() {
+                                    ui.label(file_name);
+                                }
+                            }
+                        });
+                    },
+                );
             });
+            
+            
+           
+            
+            
+           
+            
+            
+            
 
             // After the loop, change the directory if one was clicked
             if let Some(dir) = new_directory {
