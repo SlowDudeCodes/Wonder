@@ -7,3 +7,4 @@ edition = "2021"
 egui = "0.23"
 eframe = "0.23"
 winapi = { version = "0.3", features = ["winuser", "windef"] }
+walkdir = "2.3" 
